@@ -1,5 +1,7 @@
 package com.qf.ttshop.service;
 
+import com.qf.ttshop.common.dto.Page;
+import com.qf.ttshop.common.dto.Result;
 import com.qf.ttshop.pojo.po.TbItem;
 
 /**
@@ -15,4 +17,6 @@ public interface ItemService {
      * @return
      */
     TbItem getById(Long itemId);
+
+    public Result<TbItem> listItems(Page page);
 }

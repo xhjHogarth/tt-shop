@@ -1,5 +1,7 @@
 package com.qf.ttshop.web;
 
+import com.qf.ttshop.common.dto.Page;
+import com.qf.ttshop.common.dto.Result;
 import com.qf.ttshop.pojo.po.TbItem;
 import com.qf.ttshop.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +27,17 @@ public class ItemAction {
     @RequestMapping(value = "/item/{itemId}",method = RequestMethod.GET)
     public TbItem printJsonById(@PathVariable("itemId") Long itemId){
         return itemService.getById(itemId);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/items",method=RequestMethod.GET)
+    public Result<TbItem> listItems(Page page){
+        Result<TbItem> result = null;
+        try {
+           result = itemService.listItems(page);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  result;
     }
 }

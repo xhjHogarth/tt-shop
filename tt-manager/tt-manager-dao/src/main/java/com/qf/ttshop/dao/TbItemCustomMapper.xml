@@ -2,15 +2,57 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.qf.ttshop.dao.TbItemCustomMapper">
     <sql id="Base_Column_List">
-    id, title, sell_point as sellPoint, price, num, barcode, image, cid, status, created, updated
+    i.id, i.title, i.sell_point as sellPoint, i.price,
+    i.num, i.barcode, i.image, i.cid, i.status, i.created, i.updated,c.name as catName,
+    CASE i.status
+      when 1 then '正常'
+      when 2 then '下架'
+      when 3 then '删除'
+      else '未知' end as statusName,
+    DATE_FORMAT(i.created,'%Y-%m-%d') as createtime,DATE_FORMAT(i.updated,'%Y-%m-%d') as updatetime,
+    FORMAT(i.price/100,2) as priceView
   </sql>
+    <sql id="Item_Where_Clause">
+        <where>
+          i.status !=3
+            <if test="query != null and query.title != null and query.title != ''">
+              and i.title like '%${query.title}%'
+            </if>
+            <if test="query !=null and query.status != null and query.status != 0">
+              and i.status = #{query.status}
+            </if>
+        </where>
+    </sql>
     <select id="countItems" resultType="int">
-      select count(*) from tb_item
+      select count(*) from tb_item i 
+      <include refid="Item_Where_Clause"></include>
     </select>
-    <select id="listItems" resultType="com.qf.ttshop.pojo.po.TbItem">
+    <select id="listItems" resultType="com.qf.ttshop.pojo.vo.TbItemCustom">
       select
         <include refid="Base_Column_List" />
-      from tb_item
-      limit #{offset},#{rows}
+      from tb_item i left join tb_item_cat c on i.cid=c.id
+      <include refid="Item_Where_Clause"></include>
+      <choose>
+          <when test="order !=null and order.sort != null and order.order != null">
+            <foreach collection="order.orderParams" item="item" open="order by" close="" separator=",">
+
+                <choose>
+                    <when test="item == 'CONVERT(i.title USING gbk) asc'">
+                        CONVERT(i.title USING gbk) asc
+                    </when>
+                    <when test="item == 'CONVERT(i.title USING gbk) desc'">
+                        CONVERT(i.title USING gbk) desc
+                    </when>
+                    <otherwise>
+                        i.${item}
+                    </otherwise>
+                </choose>
+            </foreach>
+          </when>
+          <otherwise>
+              order by i.id
+          </otherwise>
+      </choose>
+      limit #{page.offset},#{page.rows}
     </select>
 </mapper>

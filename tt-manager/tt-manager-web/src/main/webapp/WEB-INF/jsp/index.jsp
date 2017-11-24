@@ -50,31 +50,16 @@
 <!-- jquery easyui -->
 <script src="js/jquery-easyui-1.5/jquery.easyui.min.js"></script>
 <script src="js/jquery-easyui-1.5/locale/easyui-lang-zh_CN.js"></script>
-
+<script src="js/moment.min.js"></script>
+<script src="js/common.js"></script>
+<%--百度富文本编辑器配置文件--%>
+<script src="js/ueditor/ueditor.config.js"></script>
+<%--编辑器源码文件--%>
+<script src="js/ueditor/ueditor.all.js"></script>
 <script>
-
-    $(function(){
-        //约定大于配置：定义DOM对象的时候，一般定义为tree
-        //定义的是一个jquery对象的话，一般定义为$tree
-        var $tree = $('#menu .easyui-tree');
-        $tree.tree({
-            onClick: function (node) {
-                if($('#tab').tabs('exists',node.text)){
-                    //选项卡存在
-                    $('#tab').tabs('select',node.text);
-                }else{
-                    //新增选项卡
-                    $('#tab').tabs('add',{
-                        title:node.text,
-                        href:node.attributes.href,
-                        closable:true
-                    });
-                }
-            }
-        });
-    });
-
+    ttshop.onTreeClick()
 </script>
+
 
 </body>
 </html>

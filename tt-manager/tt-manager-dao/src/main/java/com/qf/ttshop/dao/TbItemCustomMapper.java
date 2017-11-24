@@ -1,9 +1,9 @@
 package com.qf.ttshop.dao;
 
-import com.qf.ttshop.common.dto.Page;
-import com.qf.ttshop.pojo.po.TbItem;
+import com.qf.ttshop.pojo.vo.TbItemCustom;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: asus
@@ -12,7 +12,8 @@ import java.util.List;
  * Version:V1.0
  */
 public interface TbItemCustomMapper {
-    public int countItems();
+    public int countItems(Map<String,Object> map);
 
-    public List<TbItem> listItems(Page page);
+//    public List<TbItemCustom> listItems(@Param("page") Page page,@Param("order") Order order);
+    public List<TbItemCustom> listItems(Map<String,Object> map);
 }

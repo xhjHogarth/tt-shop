@@ -31,5 +31,5 @@ public interface ItemService {
 
     public int updateItemsByIds3(List<Long> ids);
 
-    public int saveItem(TbItem tbItem, String content);
+    public int saveItem(TbItem tbItem, String content,String paramData);
 }

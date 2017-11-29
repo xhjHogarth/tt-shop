@@ -24,7 +24,8 @@
             <ul class="easyui-tree">
                 <li data-options="attributes:{'href':'item-add'}">新增商品</li>
                 <li data-options="attributes:{'href':'item-list'}">查询商品</li>
-                <li data-options="attributes:{'href':'item-param-list'}">规格参数</li>
+                <li data-options="attributes:{'href':'item-param-add'}">新增规格参数</li>
+                <li data-options="attributes:{'href':'item-param-list'}">查询规格参数</li>
             </ul>
         </div>
         <div title="网站内容管理" data-options="iconCls:'icon-tip'" style="padding:10px 0;">

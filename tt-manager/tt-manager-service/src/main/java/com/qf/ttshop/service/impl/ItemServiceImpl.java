@@ -7,9 +7,11 @@ import com.qf.ttshop.common.util.IDUtils;
 import com.qf.ttshop.dao.TbItemCustomMapper;
 import com.qf.ttshop.dao.TbItemDescMapper;
 import com.qf.ttshop.dao.TbItemMapper;
+import com.qf.ttshop.dao.TbItemParamItemMapper;
 import com.qf.ttshop.pojo.po.TbItem;
 import com.qf.ttshop.pojo.po.TbItemDesc;
 import com.qf.ttshop.pojo.po.TbItemExample;
+import com.qf.ttshop.pojo.po.TbItemParamItem;
 import com.qf.ttshop.pojo.vo.TbItemCustom;
 import com.qf.ttshop.pojo.vo.TbItemQuery;
 import com.qf.ttshop.service.ItemService;
@@ -41,6 +43,8 @@ public class ItemServiceImpl implements ItemService{
     private TbItemCustomMapper itemCustomDao;
     @Autowired
     private TbItemDescMapper itemDescDao;
+    @Autowired
+    private TbItemParamItemMapper itemParamItemDao;
     @Override
     public TbItem getById(Long itemId) {
         return itemDao.selectByPrimaryKey(itemId);
@@ -126,7 +130,7 @@ public class ItemServiceImpl implements ItemService{
 
     @Transactional
     @Override
-    public int saveItem(TbItem tbItem, String content) {
+    public int saveItem(TbItem tbItem, String content,String paramData) {
         int i = 0;
         try {
             //设置商品的属性值
@@ -145,7 +149,13 @@ public class ItemServiceImpl implements ItemService{
             itemDesc.setUpdated(new Date());
             itemDesc.setItemDesc(content);
             i += itemDescDao.insert(itemDesc);
-
+            //存在表tb_item_param_item
+            TbItemParamItem itemParamItem = new TbItemParamItem();
+            itemParamItem.setItemId(id);
+            itemParamItem.setParamData(paramData);
+            itemParamItem.setCreated(new Date());
+            itemParamItem.setUpdated(new Date());
+            i += itemParamItemDao.insert(itemParamItem);
         }catch (Exception e){
             e.printStackTrace();
         }

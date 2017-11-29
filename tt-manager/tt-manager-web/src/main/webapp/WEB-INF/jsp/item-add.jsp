@@ -103,6 +103,44 @@
             if(!isLeaf){
                 $.messager.alert('警告','请选择最终类目!','warning');
                 return false;
+            }else{
+                $.get(
+                    'itemParam/' + node.id,
+                    function (data) {
+//                        debugger;
+//                        console.log(data);
+                        //动态拼接HTML
+                        var $outerTd = $('#itemAddForm .paramsShow td').eq(1);
+                        var $ul = $('<ul>');
+                        $outerTd.empty().append($ul);
+                        if(data){
+                            var paramData = data.paramData;
+                            paramData = JSON.parse(paramData);
+                            //遍历分组
+                            $.each(paramData,function (i,e) {
+                                var groupName = e.group;
+                                var $li = $('<li>');
+                                var $div = $('<div class="group">'+groupName+'</div>');
+
+                                $ul.append($li);
+                                $li.append($div);
+
+                                //遍历分组项
+                                if(e.params){
+                                    $.each(e.params,function (_i,paramName) {
+                                        var _$div = $('<div class="params"><div class="paramName">'+paramName+':</div><div class="param"><input type="text"></div></div>');
+                                        $li.append(_$div);
+                                    });
+                                }
+                            });
+                            $('#itemAddForm .paramsShow').show();
+                        }else{
+                            $('#itemAddForm .paramsShow').hide();
+                            $('#itemAddForm .paramsShow td').eq(1).empty();
+                        }
+                    },
+                    'json'
+                );
             }
         }
     });
@@ -115,7 +153,38 @@
             url:'item',
             //在提交之前出发，返回false可以中止提交
             onSubmit:function () {
+//                debugger;
                 $('#price').val($('#priceView').val()*100);
+                //获取参数部分
+                var paramsJson = [];
+                var $liList = $('#itemAddForm .paramsShow li');
+                $liList.each(function (i,e) {
+//                    debugger;
+                    var $group = $(e).find('.group');
+                    var groupName = $group.text();
+
+                    var params = [];
+                    var $trParams = $(e).find('.params');
+                    $trParams.each(function (_i,_e) {
+//                        debugger;
+                        var key = $(_e).find('.paramName').text();
+//                        console.log($(_e));
+//                        console.log($(_e).find('.paramName'));
+                        var value = $(_e).find('.param').find('input').val();
+                        var _o = {
+                            k:key,
+                            v:value
+                        };
+                        params.push(_o);
+                    });
+                    var o = {};
+                    o.group = groupName;
+                    o.params = params;
+                    paramsJson.push(o);
+                });
+                paramsJson = JSON.stringify(paramsJson);
+                $('#paramData').val(paramsJson);
+                console.log(paramsJson);
                 return $(this).form('validate');
             },
             //在表单提交成功以后触发
